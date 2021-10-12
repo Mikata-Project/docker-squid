@@ -1,6 +1,6 @@
 ARG DOCKER_PREFIX=
 
-FROM ${DOCKER_PREFIX}ubuntu:artful
+FROM ${DOCKER_PREFIX}ubuntu:focal
 
 ARG TRUST_CERT=
 
@@ -19,20 +19,20 @@ RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get build-dep -y squid && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y wget tar xz-utils libssl-dev nano
 
-ARG SQUID_VERSION=4.0.25
+ARG SQUID_VERSION=5.2
 
 # TODO: verify the squid download with the signing key
 RUN mkdir /src \
     && cd /src \
-    && wget http://www.squid-cache.org/Versions/v4/squid-$SQUID_VERSION.tar.xz \
+    && wget http://www.squid-cache.org/Versions/v5/squid-$SQUID_VERSION.tar.xz \
     && mkdir squid \
     && tar -C squid --strip-components=1 -xvf squid-$SQUID_VERSION.tar.xz
     
 RUN cd /src/squid && \
     ./configure \
         --prefix=/usr \
-        --datadir=/usr/share/squid4 \
-		--sysconfdir=/etc/squid4 \
+        --datadir=/usr/share/squid \
+		--sysconfdir=/etc/squid \
 		--localstatedir=/var \
 		--mandir=/usr/share/man \
 		--enable-inline \
@@ -58,9 +58,9 @@ RUN cd /src/squid && \
 		--enable-ssl \
 		--enable-ssl-crtd \ 
 		--disable-translation \
-		--with-swapdir=/var/spool/squid4 \
-		--with-logdir=/var/log/squid4 \
-		--with-pidfile=/var/run/squid4.pid \
+		--with-swapdir=/var/spool/squid \
+		--with-logdir=/var/log/squid \
+		--with-pidfile=/var/run/squid.pid \
 		--with-filedescriptors=65536 \
 		--with-large-files \
 		--with-default-user=proxy \
@@ -106,7 +106,7 @@ ENV HTTP_PORT=3128 \
     MITM_PROXY= \
     MITM_CERT= \
     MITM_KEY= \
-    VISIBLE_HOSTNAME=docker-squid4 \
+    VISIBLE_HOSTNAME=docker-squid \
     MAX_CACHE_SIZE=40000 \
     MAX_OBJECT_SIZE="1536 MB" \
     MEM_CACHE_SIZE="128 MB" \
