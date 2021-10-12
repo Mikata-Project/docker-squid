@@ -62,6 +62,11 @@ variables:
    Allow overriding the default tls_outgoing_options supplied to OpenSSL. These
    are safe defaults, but if you're in a really broken environment might not be
    usable.
+   
+## Splice sites
+
+Some sites require that the connection is just let through. This image contains some
+predefined site names which have this problem.
 
 # Proxychains
 By default squid in SSL MITM mode treats `cache_peer` entries quite differently.
