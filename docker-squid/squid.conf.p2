@@ -30,6 +30,12 @@ http_port {{HTTP_PORT}} {% if MITM_PROXY|default:"" == "yes" %} ssl-bump \
 {% endif %}
 
 {% if MITM_PROXY|default:"" == "yes" %}
+# aws tools
+acl nobump_sites ssl::server_name .amazonaws.com
+# vscode
+acl nobump_sites ssl::server_name .extensions.coder.com
+acl nobump_sites ssl::server_name storage.googleapis.com
+ssl_bump splice nobump_sites
 ssl_bump bump all
 {% endif %}
 
