@@ -35,6 +35,7 @@ acl nobump_sites ssl::server_name .amazonaws.com
 # vscode
 acl nobump_sites ssl::server_name .extensions.coder.com
 acl nobump_sites ssl::server_name storage.googleapis.com
+acl nobump_sites ssl::server_name .atlassian.net
 ssl_bump splice nobump_sites
 ssl_bump bump all
 {% endif %}
