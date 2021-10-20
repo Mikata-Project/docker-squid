@@ -17,6 +17,7 @@ cache_dir aufs /var/cache/squid {{MAX_CACHE_SIZE|default:"40000"}} 16 256
 
 maximum_object_size {{MAX_OBJECT_SIZE|default:"1536 MB"}}
 cache_mem {{MEM_CACHE_SIZE|default:"128 MB"}}
+retry_on_error on
 
 tls_outgoing_options capath=/etc/ssl/certs \
     options={{TLS_OPTIONS|default:"NO_SSLv3,NO_TLSv1"}} \
@@ -30,14 +31,21 @@ http_port {{HTTP_PORT}} {% if MITM_PROXY|default:"" == "yes" %} ssl-bump \
 {% endif %}
 
 {% if MITM_PROXY|default:"" == "yes" %}
-# aws tools
-acl nobump_sites ssl::server_name .amazonaws.com
 # vscode
 acl nobump_sites ssl::server_name .extensions.coder.com
 acl nobump_sites ssl::server_name storage.googleapis.com
-acl nobump_sites ssl::server_name .atlassian.net
 ssl_bump splice nobump_sites
+acl bump_browsers browser -i ^Wget.*
+acl bump_browsers browser -i ^Gradle.*
+acl bump_browsers browser -i ^Debian.*
+ssl_bump bump bump_browsers
 ssl_bump stare all
+
+# force these URLs to be cached aggressively
+refresh_pattern -i repo\.maven\.apache\.org 129600 999999% 129600
+refresh_pattern -i repo\.jenkins-ci\.org 129600 999999% 129600
+refresh_pattern -i (deb|zip|tar\.gz|tar\.bz2|whl)$ 129600 999999% 129600 override-expire
+refresh_pattern -i .*by-hash\/[A-Z0-9]+\/[a-f0-9]+$ 129600 999999% 129600 override-expire
 {% endif %}
 
 {% if ICP_PORT|default:"" != "" %}
