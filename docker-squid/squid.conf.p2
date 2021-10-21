@@ -38,6 +38,7 @@ ssl_bump splice nobump_sites
 acl bump_browsers browser -i ^Wget.*
 acl bump_browsers browser -i ^Gradle.*
 acl bump_browsers browser -i ^Debian.*
+acl bump_browsers browser -i ^pip.*
 ssl_bump bump bump_browsers
 ssl_bump stare all
 
