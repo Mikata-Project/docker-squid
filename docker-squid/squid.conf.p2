@@ -47,6 +47,10 @@ refresh_pattern -i repo\.maven\.apache\.org 129600 999999% 129600
 refresh_pattern -i repo\.jenkins-ci\.org 129600 999999% 129600
 refresh_pattern -i (deb|zip|tar\.gz|tar\.bz2|whl)$ 129600 999999% 129600 override-expire
 refresh_pattern -i .*by-hash\/[A-Z0-9]+\/[a-f0-9]+$ 129600 999999% 129600 override-expire
+
+# don't cache these, too long Expires: headers may give invalid results
+acl no_cache url_regex -i Release.*
+cache deny no_cache
 {% endif %}
 
 {% if ICP_PORT|default:"" != "" %}
